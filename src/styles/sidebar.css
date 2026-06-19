@@ -1,0 +1,123 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+    padding-top: var(--default-padding);
+    padding-left: 15px;
+    padding-right: 25px;
+    gap: calc(var(--default-gap) *2);
+    border-right: 1px solid gray;
+    height: 100%;
+}
+
+.sidebar__icon {
+    width: var(--step--1);
+    height: var(--step--1);
+    filter: invert(100%) sepia(3%) saturate(12%) hue-rotate(103deg) brightness(105%) contrast(105%);
+
+}
+
+.sidebar__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap);
+}
+
+.sidebar__brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar__title {
+    font-size: var(--step-2);
+}
+
+.sidebar__brand-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--default-gap);
+}
+
+.sidebar__logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+}
+
+.sidebar__collapse-button:hover {
+    transform: scale(1.1);
+    filter: brightness(100);
+
+}
+
+.sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--default-gap) *2);
+    font-size: var(--step--1);
+    height: 100%;
+}
+
+.sidebar__filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap)
+}
+
+.sidebar__filter {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar__button {
+    display: flex;
+    flex-direction: row;
+    gap: var(--default-gap);
+}
+
+.sidebar__button:hover {
+    filter: brightness(200%);
+    font-weight: 500;
+
+}
+
+.sidebar__link {
+    justify-self: flex-end;
+    color: white
+}
+
+.sidebar__project-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap);
+}
+
+.sidebar__project {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.sidebar__project-icon {
+    border-radius: 100%;
+    width: var(--step--1);
+    height: var(--step--1);
+    background-color: red;
+    border: 2px solid black;
+}
+
+.sidebar__project-active {
+    font-weight: 900;
+}
+
+.sidebar__my-links {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--default-gap) / 2);
+    font-size: var(--step--2);
+    opacity: 45%;
+}

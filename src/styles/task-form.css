@@ -1,0 +1,118 @@
+.task-form {
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--default-padding) * 2);
+    gap: var(--default-gap);
+    background-color: var(--card-bg);
+    max-width: 500px;
+    border: 1px solid rgba(1, 1, 1, 0.75);
+    border-radius: 10px;
+    position: absolute;
+    justify-self: center;
+    align-self: center;
+    box-shadow: 0 0 10px 2px black;
+}
+
+.task-form__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.new-task__header-title {
+    font-size: var(--step-2);
+    padding: 0;
+    margin: 0;
+}
+
+.new-task__collapse {
+    width: 10px;
+    height: 10px;
+}
+
+.task-form__title-input {
+    all: unset;
+    border: 1px solid var(--styling-color);
+    border-radius: 5px;
+    font-size: var(--step-1);
+    padding: var(--default-padding);
+    font-weight: 400;
+}
+
+.task-form__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap)
+}
+
+.task-form__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-form__field-title {
+    display: flex;
+    flex-direction: row;
+    font-size: var(--step-0);
+    gap: var(--default-gap);
+}
+
+.task-form__icon {
+    width: var(--default-gap);
+    height: var(--default-gap);
+}
+
+.task-form__select-wrapper {
+    display: flex;
+    border: 1px solid var(--styling-color);
+    border-radius: 5px;
+    width: 200px;
+    padding: calc(var(--default-padding) / 2);
+    font-size: var(--step-0);
+    background-color: var(--bg-color);
+    color: white
+}
+
+.task-form__date-wrapper {
+    display: flex;
+    border: 1px solid var(--styling-color);
+    border-radius: 5px;
+    width: 200px;
+    padding: calc(var(--default-padding) / 2);
+    font-size: var(--step-0);
+    background-color: var(--bg-color);
+    color: white
+}
+
+.task-form__notes-row {
+    align-items: start;
+}
+
+.task-form__notes-container {
+    border: 1px solid var(--styling-color);
+    border-radius: 5px;
+    font-size: var(--step-0);
+    background-color: var(--bg-color);
+    color: white;
+    font-size: var(--step--1);
+}
+
+.task-form__button {
+    padding: var(--default-padding);
+    background-color: var(--styling-color);
+    border-radius: 5px;
+}
+
+.task-form__button:hover {
+    filter: brightness(125%);
+}
+
+.task-form__footer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--default-gap);
+    justify-content: flex-end;
+}

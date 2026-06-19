@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="page__container">
+
+        <aside class="sidebar">
+            <div class="sidebar__brand">
+                <div class="sidebar__brand-header">
+                    <img src="./assets/images/selfie.jpg" alt="vince-photo" class="sidebar__logo">
+                    <h1 class="sidebar__title">Vince</h1>
+                </div>
+                <button class="sidebar__collapse-button">
+                    <img src="./assets/icons/fi-rr-collapse.svg" alt="collapse sidebar" class="sidebar__icon">
+                </button>
+            </div>
+
+            <nav class="sidebar__nav">
+                <section class="sidebar__section">
+                    <ul class="sidebar__filter-list sidebar__list">
+                        <li class="sidebar__filter">
+                            <button class="sidebar__button" data-filter="today">
+                                <img src="./assets/icons/fi-rr-calendar.svg" alt="calendar-today" class="sidebar__icon">
+                                <span class="sidebar__label">Today</span>
+                            </button>
+                            <data data-filter-count="today" value="0" class="sidebar__count">0</data>
+                        </li>
+                        <li class="sidebar__filter">
+                            <button class="sidebar__button" data-filter="week">
+                                <img src="./assets/icons/fi-rs-calendar.svg" alt="calendar-week" class="sidebar__icon">
+                                <span class="sidebar__label">This Week</span>
+                            </button>
+                            <data data-filter-count="week" value="0" class="sidebar__count">0</data>
+                        </li>
+                        <li class="sidebar__filter">
+                            <button class="sidebar__button" data-filter="all">
+                                <img src="./assets/icons/fi-rs-list.svg" alt="list-all" class="sidebar__icon">
+                                <span class="sidebar__label">All tasks</span>
+                            </button>
+                            <data data-filter-count="all" value="0" class="sidebar__count">0</data>
+                        </li>
+                    </ul>
+                </section>
+
+                <div class="sidebar__section">
+                    <div class="sidebar__section-title">Projects</div>
+                    <ul class="sidebar__project-list sidebar__list">
+                        <li class="sidebar__project">
+                            <button class="sidebar__button">
+                                <span class="sidebar__project-icon"></span>
+                                <span class="sidebar__project-label sidebar__project-active">Work</span>
+                            </button>
+                            <data data-project="project-name" value="0" class="sidebar__count">0</data>
+
+                        </li>
+                        <li class="sidebar__project">
+                            <button class="sidebar__button">
+                                <img src="./assets/icons/fi-rr-plus.svg" alt="add-project" class="sidebar__icon">
+                                <span>New Project</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar__my-links">
+                <a href="./pages/about.html" class="sidebar__link">About</a>
+                <a href="https://github.com/vincentdevelops" class="sidebar__link">Github</a>
+                <a href="https://vincentdevelops.com" class="sidebar__link">VincentDevelops.com</a>
+            </div>
+
+        </aside>
+
+        <main class="main">
+            <header class="toolbar">
+                <div class="toolbar__heading">
+                    <h1 class="toolbar__title">Work</h1>
+                    <img class="toolbar__icon" src="./assets/icons/fi-rr-angle-small-down.svg" alt="list-projects">
+                </div>
+                <div class="toolbar__actions">
+                    <button class="toolbar__button" data-action="toolbar__action--filter">
+                        <img class="toolbar__icon" src="./assets/icons/fi-rr-filter.svg" alt="">
+                        <span class="toolbar__button-title">Filter</span>
+                    </button>
+                    <button class="toolbar__button" data-action="toolbar__action--sort">
+                        <img class="toolbar__icon" src="./assets/icons/fi-rr-apps-sort.svg" alt="">
+                        <span class="toolbar__button-title">Sort</span>
+                    </button>
+                    <button class="toolbar__button toolbar__button-new-task" data-action="toolbar__action--new">
+                        <img class="toolbar__icon toolbar__button-new-task-icon" src="./assets/icons/fi-bs-plus.svg"
+                            alt="">
+                        <span class="toolbar__button-title">Add Task</span>
+                    </button>
+                </div>
+            </header>
+
+            <section class="task-view">
+
+                <div class="project-view">
+
+                    <section class="project-view__column" id="project-view__column-todo">
+                        <div class="project-view__column-header">
+                            <h3 class="project-view__column-title">To Do</h3>
+                            <data value="0" class="project-view__column-count">0</data>
+                        </div>
+                        <ul class="project-view__task-list">
+                            <li class="project-view__task">
+                                <button class="project-view__task-button">
+                                    <div class="project-view__task-main">
+                                        <span class="project-view__task-title">Double click me!</span>
+                                        <span class="project-view__task-complete"></span>
+                                    </div>
+                                    <div class="project-view__task-details">
+                                        <time datetime="" class="project-view__task-date">May 20</time>
+                                        <img src="./assets/icons/fi-rs-flag.svg" alt=""
+                                            class="project-view__task-priority task-priority__low">
+                                    </div>
+                                </button>
+                            </li>
+                            <li class="project-view__task">
+                                <button class="project-view__task-button project-view__new-task-button">
+                                    <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
+                                        class="project-view__task-icon">
+                                    <span class="project-view__task-title">Add Task</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="project-view__column" id="project-view__column-progress">
+                        <div class="project-view__column-header">
+                            <h3 class="project-view__column-title">In Progress</h3>
+                            <data value="0" class="project-view__column-count">0</data>
+                        </div>
+                        <ul class="project-view__task-list">
+                            <li class="project-view__task">
+                                <button class="project-view__task-button">
+                                    <div class="project-view__task-main">
+                                        <span class="project-view__task-title">Drag me to another column!</span>
+                                        <span class="project-view__task-complete"></span>
+                                    </div>
+                                    <div class="project-view__task-details">
+                                        <time datetime="" class="project-view__task-date">June 3</time>
+                                        <img src="./assets/icons/fi-rs-flag.svg" alt=""
+                                            class="project-view__task-priority task-priority__med">
+                                    </div>
+                                </button>
+                            </li>
+                            <li class="project-view__task">
+                                <button class="project-view__task-button project-view__new-task-button">
+                                    <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
+                                        class="project-view__task-icon">
+                                    <span class="project-view__task-title">Add Task</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="project-view__column" id="project-view__column-completed">
+                        <div class="project-view__column-header">
+                            <h3 class="project-view__column-title">Completed</h3>
+                            <data value="0" class="project-view__column-count">0</data>
+                        </div>
+                        <ul class="project-view__task-list">
+                            <li class="project-view__task">
+                                <button class="project-view__task-button">
+                                    <div class="project-view__task-main">
+                                        <span class="project-view__task-title">Click my green bubble!</span>
+                                        <span
+                                            class="project-view__task-complete project-view__task-complete--active"></span>
+                                    </div>
+                                    <div class="project-view__task-details">
+                                        <time datetime="" class="project-view__task-date">May 20</time>
+                                        <img src="./assets/icons/fi-rs-flag.svg" alt=""
+                                            class="project-view__task-priority task-priority__high">
+                                    </div>
+                                </button>
+                            </li>
+                            <li class="project-view__task">
+                                <button class="project-view__task-button project-view__new-task-button">
+                                    <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
+                                        class="project-view__task-icon">
+                                    <span class="project-view__task-title">Add Task</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </section>
+
+                </div>
+                <!-- todo, in progress, done -->
+
+
+            </section>
+
+            <section class="date-view">
+
+            </section>
+
+
+
+        </main>
+
+        <form method="post" class="task-form hide">
+            <div class="task-form__header">
+                <h2 class="new-task__header-title">New Task</h2>
+                <img src="./assets/icons/fi-br-cross.svg" alt="form-close" class="new-task__collapse new-task__icon">
+            </div>
+
+            <input type="text" class="task-form__title-input">
+
+            <div class="task-form__body">
+                <div class="task-form__row">
+                    <div class="task-form__field-title">
+                        <img src="./assets/icons/fi-bs-box-alt.svg" alt="calendar" class="task-form__icon">
+                        <label for="project">Project</label>
+                    </div>
+                    <select name="project" class="task-form__select-wrapper">
+                        <option value="none">
+                            <span>No Project</span>
+                        </option>
+                        <option value="work">
+                            <span>Work</span>
+                        </option>
+                    </select>
+                </div>
+                <div class="task-form__row">
+                    <div class="task-form__field-title">
+                        <img src="./assets/icons/fi-rs-calendar.svg" alt="calendar" class="task-form__icon">
+                        <label for="due_date">Due Date</label>
+                    </div>
+                    <input type="date" class="task-form__date-wrapper">
+                </div>
+                <div class="task-form__row">
+                    <div class="task-form__field-title">
+                        <img src="./assets/icons/fi-rs-flag.svg" alt="status" class="task-form__icon">
+                        <label for="project">Priority</label>
+                    </div>
+                    <select name="priority" class="task-form__select-wrapper">
+                        <option value="low">Low </option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="task-form__row">
+                    <div class="task-form__field-title">
+                        <img src="./assets/icons/fi-br-checkbox.svg" alt="status" class="task-form__icon">
+                        <label for="project">Status</label>
+                    </div>
+                    <select name="priority" class="task-form__select-wrapper">
+                        <option value="todo">ToDo</option>
+                        <option value="progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="task-form__row task-form__notes-row">
+                    <div class="task-form__field-title">
+                        <img src="./assets/icons/fi-br-align-center.svg" alt="calendar" class="task-form__icon">
+                        <label for="description">Notes</label>
+                    </div>
+                    <textarea type="text" class="task-form__notes-container"></textarea>
+                </div>
+            </div>
+            <div class="task-form__footer">
+                <button class="task-form__button" type="reset">Cancel</button>
+                <button class="task-form__button" type="submit">Create Task</button>
+            </div>
+        </form>
+
+
+    </div>
+</body>
+
+</html>

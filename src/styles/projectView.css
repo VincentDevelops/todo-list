@@ -1,0 +1,135 @@
+.project-view {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+}
+
+.project-view__column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, .06);
+    border-radius: 10px;
+    padding: var(--default-padding);
+    gap: var(--default-gap);
+    background-color: #091628;
+}
+
+.project-view__column-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.project-view__column-title {
+    display: flex;
+    margin: 0;
+    width: fit-content;
+    font-size: var(--step-0);
+    font-weight: 600;
+}
+
+.project-view__column-count {
+    font-size: var(--step--1);
+}
+
+.project-view__task-list {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--default-gap)/2);
+    width: 100%;
+}
+
+.project-view__task-button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: calc(var(--default-padding)*1.5);
+    gap: var(--default-padding);
+    border-radius: 10px;
+    width: 100%;
+    background-color: #202C3B;
+    font-weight: 500;
+    font-size: var(--step--1);
+}
+
+.project-view__task-button:hover {
+    filter: brightness(150%);
+}
+
+.project-view__task-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.project-view__task-complete {
+    width: var(--step--1);
+    height: var(--step--1);
+    border-radius: 100%;
+    border: 1px solid white;
+}
+
+.project-view__task-complete:hover {
+    background-color: rgba(9, 177, 32, 0.25);
+}
+
+.project-view__task-complete--active {
+    background-color: var(--success-color);
+}
+
+.project-view__task-title {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.project-view__task-details {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: fit-content;
+}
+
+.project-view__task-priority {
+    width: var(--step--1);
+    height: var(--step--1);
+}
+
+.project-view__new-task-button {
+    display: flex;
+    flex-direction: row;
+    background: none;
+}
+
+.project-view__new-task-button:hover {
+    filter: brightness(200%);
+    font-weight: 600;
+}
+
+.project-view__task-icon {
+    width: var(--step-0);
+    height: var(--step-0);
+}
+
+.project-view__task-priority:hover {
+    filter: brightness(125%);
+}
+
+#project-view__column-todo {
+    border-top: 4px solid #A288E3;
+
+}
+
+#project-view__column-progress {
+    border-top: 4px solid #007fff;
+
+}
+
+#project-view__column-completed {
+    border-top: 4px solid var(--success-color);
+
+}

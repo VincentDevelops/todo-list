@@ -1,0 +1,84 @@
+/* @link https://utopia.fyi/type/calculator?c=360,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --step--2: clamp(0.7813rem, 0.7736rem + 0.0341vw, 0.8rem);
+    --step--1: clamp(0.9375rem, 0.9119rem + 0.1136vw, 1rem);
+    --step-0: clamp(1.125rem, 1.0739rem + 0.2273vw, 1.25rem);
+    --step-1: clamp(1.35rem, 1.2631rem + 0.3864vw, 1.5625rem);
+    --step-2: clamp(1.62rem, 1.4837rem + 0.6057vw, 1.9531rem);
+    --step-3: clamp(1.944rem, 1.7405rem + 0.9044vw, 2.4414rem);
+    --step-4: clamp(2.3328rem, 2.0387rem + 1.3072vw, 3.0518rem);
+    --step-5: clamp(2.7994rem, 2.384rem + 1.8461vw, 3.8147rem);
+
+    --default-padding: 10px;
+    --default-gap: 20px;
+    --default-font-family: "Inter", sans-serif;
+    --bg-color: #07111F;
+
+    --success-color: #5cf64a;
+    --task-lvl-3-color: #d8315b;
+    --task-lvl-2-color: #f17300;
+    --task-lvl-1-color: #e2c044;
+
+    --styling-color: #A288E3;
+
+    --card-bg: #0b192b;
+}
+
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    all: unset;
+}
+
+body {
+    font-family: var(--default-font-family);
+    background-color: var(--bg-color);
+    color: #FFFAFF;
+    margin: 0;
+    justify-content: center;
+}
+
+.page__container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    justify-self: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1920px;
+    position: relative;
+}
+
+.main {
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-top: var(--default-padding);
+    width: 100%;
+}
+
+.task-view {
+    height: 100%;
+}
+
+.task-priority__low {
+    filter: invert(34%) sepia(32%) saturate(5709%) hue-rotate(197deg) brightness(102%) contrast(108%);
+}
+
+.task-priority__med {
+    filter: invert(46%) sepia(24%) saturate(6222%) hue-rotate(10deg) brightness(103%) contrast(102%);
+}
+
+.task-priority__high {
+    filter: invert(40%) sepia(90%) saturate(5282%) hue-rotate(328deg) brightness(89%) contrast(88%);
+}
+
+.hide {
+    display: none !important;
+}
