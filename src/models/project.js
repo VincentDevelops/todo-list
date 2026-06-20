@@ -94,7 +94,7 @@ export const project = (name) => {
         getCompletedList, getProgressList, getTask, getTodoList,
         setColor, addTask, addTasks, addCompletedTask,
         addProgressTask, addTodoTask, removeTask,
-        sortByDate,
+        sortByDate, getTitle, getColor,
     }
 
 }

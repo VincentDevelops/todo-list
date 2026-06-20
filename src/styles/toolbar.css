@@ -4,6 +4,7 @@
     justify-content: space-between;
     align-items: center;
     height: fit-content;
+    padding: calc(var(--default-padding)*1.5);
 }
 
 .toolbar__heading {
@@ -27,7 +28,9 @@
 .toolbar__button {
     font-size: var(--step-0);
     padding: var(--default-padding);
-    gap: var(--default-gap);
+    gap: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .toolbar__button:hover {

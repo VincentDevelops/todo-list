@@ -13,6 +13,7 @@
     padding: var(--default-padding);
     gap: var(--default-gap);
     background-color: #091628;
+    height: fit-content;
 }
 
 .project-view__column-header {
@@ -115,9 +116,6 @@
     height: var(--step-0);
 }
 
-.project-view__task-priority:hover {
-    filter: brightness(125%);
-}
 
 #project-view__column-todo {
     border-top: 4px solid #A288E3;

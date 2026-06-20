@@ -52,13 +52,12 @@
                 <div class="sidebar__section">
                     <div class="sidebar__section-title">Projects</div>
                     <ul class="sidebar__project-list sidebar__list">
-                        <li class="sidebar__project">
+                        <li class="sidebar__project sidebar__project--active">
                             <button class="sidebar__button">
                                 <span class="sidebar__project-icon"></span>
-                                <span class="sidebar__project-label sidebar__project-active">Work</span>
+                                <span class="sidebar__project-label ">Work</span>
                             </button>
                             <data data-project="project-name" value="0" class="sidebar__count">0</data>
-
                         </li>
                         <li class="sidebar__project">
                             <button class="sidebar__button">
@@ -81,8 +80,9 @@
         <main class="main">
             <header class="toolbar">
                 <div class="toolbar__heading">
-                    <h1 class="toolbar__title">Work</h1>
-                    <img class="toolbar__icon" src="./assets/icons/fi-rr-angle-small-down.svg" alt="list-projects">
+                    <select class="toolbar__title task-form__select-wrapper">
+                        <option class="toolbar__title-option" value="work">Work</option>
+                    </select>
                 </div>
                 <div class="toolbar__actions">
                     <button class="toolbar__button" data-action="toolbar__action--filter">
@@ -110,7 +110,7 @@
                             <h3 class="project-view__column-title">To Do</h3>
                             <data value="0" class="project-view__column-count">0</data>
                         </div>
-                        <ul class="project-view__task-list">
+                        <ul class="project-view__task-list" data-list-type="todo">
                             <li class="project-view__task">
                                 <button class="project-view__task-button">
                                     <div class="project-view__task-main">
@@ -211,7 +211,7 @@
                 <img src="./assets/icons/fi-br-cross.svg" alt="form-close" class="new-task__collapse new-task__icon">
             </div>
 
-            <input type="text" class="task-form__title-input">
+            <input type="text" value="What will we do today?" class="task-form__title-input">
 
             <div class="task-form__body">
                 <div class="task-form__row">

@@ -16,6 +16,7 @@ export const task = (newTitle) => {
     const getDueDate = () => dueDate;
     const getStatus = () => status;
     const getProject = () => project;
+    const getPriority = () => priority;
 
     const setTitle = (newTitle) => {
         title = newTitle;
@@ -43,7 +44,7 @@ export const task = (newTitle) => {
 
     return {
         getDescription, getDueDate, getId, getProject, getStatus, getTitle,
-        setDescription, setDueDate, setPriority, setStatus, setTitle
+        getPriority, setDescription, setDueDate, setPriority, setStatus, setTitle
     }
 
 }

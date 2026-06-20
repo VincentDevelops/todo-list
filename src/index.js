@@ -8,6 +8,8 @@ import { Status } from "./models/status.js"
 import { Priority } from "./models/priority.js"
 import { task } from "./models/task.js"
 import { project } from "./models/project.js"
+import { taskRenderer } from "./components/TaskRenderer.js";
+import { projectRenderer } from "./components/projectRenderer.js";
 
 
 const myProj = project("myProj");
@@ -33,6 +35,7 @@ const todoID = completeTask.getId();
 console.log(myProj);
 
 myProj.sortByDate();
+myProj.setColor("#27F5E0")
 
 console.log(myProj);
 
@@ -40,4 +43,24 @@ console.log(myProj);
 console.log(myProj.getTodoList());
 console.log(myProj.getProgressList());
 console.log(myProj.getCompletedList());
+
+const renderer = taskRenderer(todoTask);
+
+const list = document.querySelector(`[data-list-type="todo"]`);
+list.prepend(renderer);
+
+console.log(list);
+console.log(renderer);
+
+const projectSidebar = document.querySelector(".sidebar__project-list");
+
+const projectL = projectRenderer(myProj);
+
+projectSidebar.prepend(projectL);
+
+console.log(projectSidebar);
+console.log(projectL);
+
+
+
 
