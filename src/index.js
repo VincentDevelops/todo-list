@@ -10,7 +10,7 @@ import { task } from "./models/task.js"
 import { project } from "./models/project.js"
 import { taskRenderer } from "./components/TaskRenderer.js";
 import { projectRenderer } from "./components/projectRenderer.js";
-
+import { renderProjectTasks } from "./components/renderProjectTasks.js";
 
 const myProj = project("myProj");
 
@@ -62,5 +62,5 @@ console.log(projectSidebar);
 console.log(projectL);
 
 
-
+renderProjectTasks(myProj);
 
