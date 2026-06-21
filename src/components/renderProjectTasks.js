@@ -1,3 +1,6 @@
+import { taskRenderer } from "./taskRenderer";
+import { project } from "../models/project";
+
 
 export function renderProjectTasks(project) {
     const todoCol = document.querySelector(`[data-list-type="todo"]`);
@@ -14,16 +17,16 @@ export function renderProjectTasks(project) {
         .forEach(task => task.remove());
 
     if (project.getTodoList().size > 0)
-        for (const task of project.getTodoList())
-            todoCol.append(taskRenderer(task));
+        for (const task of project.getTodoList().values())
+            todoCol.prepend(taskRenderer(task));
 
 
     if (project.getProgressList().size > 0)
-        for (const task of project.getProgressList())
-            progCol.append(taskRenderer(task))
+        for (const task of project.getProgressList().values())
+            progCol.prepend(taskRenderer(task))
 
 
     if (project.getCompletedList().size > 0)
-        for (const task of project.getCompletedList())
-            compCol.append(taskRenderer(task));
+        for (const task of project.getCompletedList().values())
+            compCol.prepend(taskRenderer(task));
 }

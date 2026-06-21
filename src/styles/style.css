@@ -66,13 +66,11 @@ body {
     width: 100%;
 }
 
-.task-view {}
-
 .task-priority__low {
     filter: invert(34%) sepia(32%) saturate(5709%) hue-rotate(197deg) brightness(102%) contrast(108%);
 }
 
-.task-priority__med {
+.task-priority__medium {
     filter: invert(46%) sepia(24%) saturate(6222%) hue-rotate(10deg) brightness(103%) contrast(102%);
 }
 

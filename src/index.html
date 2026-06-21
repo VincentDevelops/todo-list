@@ -53,16 +53,17 @@
                     <div class="sidebar__section-title">Projects</div>
                     <ul class="sidebar__project-list sidebar__list">
                         <li class="sidebar__project sidebar__project--active">
-                            <button class="sidebar__button">
+                            <button class="sidebar__button sidebar__project-list-options">
                                 <span class="sidebar__project-icon"></span>
                                 <span class="sidebar__project-label ">Work</span>
                             </button>
                             <data data-project="project-name" value="0" class="sidebar__count">0</data>
                         </li>
                         <li class="sidebar__project">
-                            <button class="sidebar__button">
+                            <button class="sidebar__new-project-button">
                                 <img src="./assets/icons/fi-rr-plus.svg" alt="add-project" class="sidebar__icon">
-                                <span>New Project</span>
+                                <span class="sidebar__new-project-title">New Project</span>
+                                <input type="text" maxlength="23" class="sidebar__new-project-input hide">
                             </button>
                         </li>
                     </ul>
@@ -80,8 +81,8 @@
         <main class="main">
             <header class="toolbar">
                 <div class="toolbar__heading">
-                    <select class="toolbar__title task-form__select-wrapper">
-                        <option class="toolbar__title-option" value="work">Work</option>
+                    <select class="toolbar__title task-form__select-wrapper toolbar__project-list">
+                        <option class="toolbar__title-option" value="work" id="work">Work</option>
                     </select>
                 </div>
                 <div class="toolbar__actions">
@@ -93,7 +94,8 @@
                         <img class="toolbar__icon" src="./assets/icons/fi-rr-apps-sort.svg" alt="">
                         <span class="toolbar__button-title">Sort</span>
                     </button>
-                    <button class="toolbar__button toolbar__button-new-task" data-action="toolbar__action--new">
+                    <button class="toolbar__button toolbar__button-new-task toolbar__add-task-button"
+                        data-action="toolbar__action--new">
                         <img class="toolbar__icon toolbar__button-new-task-icon" src="./assets/icons/fi-bs-plus.svg"
                             alt="">
                         <span class="toolbar__button-title">Add Task</span>
@@ -128,7 +130,8 @@
                                 <button class="project-view__task-button project-view__new-task-button">
                                     <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
                                         class="project-view__task-icon">
-                                    <span class="project-view__task-title">Add Task</span>
+                                    <span class="project-view__task-title project-view__column-add-task-button">Add
+                                        Task</span>
                                 </button>
                             </li>
                         </ul>
@@ -156,7 +159,8 @@
                                 <button class="project-view__task-button project-view__new-task-button">
                                     <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
                                         class="project-view__task-icon">
-                                    <span class="project-view__task-title">Add Task</span>
+                                    <span class="project-view__task-title project-view__column-add-task-button">Add
+                                        Task</span>
                                 </button>
                             </li>
                         </ul>
@@ -185,7 +189,8 @@
                                 <button class="project-view__task-button project-view__new-task-button">
                                     <img src="./assets/icons/fi-bs-plus.svg" alt="new task button"
                                         class="project-view__task-icon">
-                                    <span class="project-view__task-title">Add Task</span>
+                                    <span class="project-view__task-title project-view__column-add-task-button">Add
+                                        Task</span>
                                 </button>
                             </li>
                         </ul>
@@ -205,21 +210,21 @@
 
         </main>
 
-        <form method="post" class="task-form hide">
+        <form class="task-form hide">
             <div class="task-form__header">
                 <h2 class="new-task__header-title">New Task</h2>
                 <img src="./assets/icons/fi-br-cross.svg" alt="form-close" class="new-task__collapse new-task__icon">
             </div>
 
-            <input type="text" value="What will we do today?" class="task-form__title-input">
+            <input type="text" class="task-form__title-input" placeholder="What will we do today...">
 
-            <div class="task-form__body">
+            <div novalidate class="task-form__body">
                 <div class="task-form__row">
                     <div class="task-form__field-title">
                         <img src="./assets/icons/fi-bs-box-alt.svg" alt="calendar" class="task-form__icon">
                         <label for="project">Project</label>
                     </div>
-                    <select name="project" class="task-form__select-wrapper">
+                    <select name="project" class="task-form__select-wrapper task-form__project-list">
                         <option value="none">
                             <span>No Project</span>
                         </option>
@@ -240,7 +245,7 @@
                         <img src="./assets/icons/fi-rs-flag.svg" alt="status" class="task-form__icon">
                         <label for="project">Priority</label>
                     </div>
-                    <select name="priority" class="task-form__select-wrapper">
+                    <select name="priority" class="task-form__select-wrapper task-form__priority">
                         <option value="low">Low </option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
@@ -251,7 +256,7 @@
                         <img src="./assets/icons/fi-br-checkbox.svg" alt="status" class="task-form__icon">
                         <label for="project">Status</label>
                     </div>
-                    <select name="priority" class="task-form__select-wrapper">
+                    <select name="priority" class="task-form__select-wrapper task-form__status">
                         <option value="todo">ToDo</option>
                         <option value="progress">In Progress</option>
                         <option value="completed">Completed</option>
@@ -262,15 +267,14 @@
                         <img src="./assets/icons/fi-br-align-center.svg" alt="calendar" class="task-form__icon">
                         <label for="description">Notes</label>
                     </div>
-                    <textarea type="text" class="task-form__notes-container"></textarea>
+                    <textarea type="text" class="task-form__notes-container" maxlength="120"></textarea>
                 </div>
             </div>
             <div class="task-form__footer">
-                <button class="task-form__button" type="reset">Cancel</button>
-                <button class="task-form__button" type="submit">Create Task</button>
+                <button class="task-form__button task-form__collapse-form" type="reset">Cancel</button>
+                <button class="task-form__button task-form__create-task" type="button">Create Task</button>
             </div>
         </form>
-
 
     </div>
 </body>

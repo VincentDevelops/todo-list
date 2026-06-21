@@ -8,9 +8,11 @@ import { Status } from "./models/status.js"
 import { Priority } from "./models/priority.js"
 import { task } from "./models/task.js"
 import { project } from "./models/project.js"
-import { taskRenderer } from "./components/TaskRenderer.js";
+import { taskRenderer } from "./components/taskRenderer.js";
 import { projectRenderer } from "./components/projectRenderer.js";
 import { renderProjectTasks } from "./components/renderProjectTasks.js";
+import { renderProjectTask } from "./components/renderProjectTask.js";
+import { } from "./controllers/appController.js"
 
 const myProj = project("myProj");
 

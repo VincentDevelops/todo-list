@@ -76,6 +76,7 @@
     display: flex;
     flex-direction: row;
     gap: var(--default-gap);
+    align-items: center;
 }
 
 .sidebar__button:hover {
@@ -120,4 +121,34 @@
     gap: calc(var(--default-gap) / 2);
     font-size: var(--step--2);
     opacity: 45%;
+}
+
+.sidebar__new-project-input {
+    all: unset;
+    border: 1px solid var(--styling-color);
+    display: flex;
+    border-radius: 5px;
+    font-size: var(--step-0);
+    padding: 5px;
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+
+.sidebar__new-project-button {
+    display: flex;
+    align-items: center;
+    gap: var(--default-gap);
+    width: 100%;
+    min-width: 0;
+}
+
+.sidebar__new-project-button:hover {
+    filter: brightness(150%);
+}
+
+.sidebar__new-project-title:hover {
+    font-weight: 600;
 }
