@@ -6,10 +6,10 @@ import priorityFlag from "../assets/icons/fi-rs-flag.svg"
 export function taskRenderer(task) {
     const taskLi = document.createElement("li");
     taskLi.classList.add("project-view__task");
-    taskLi.dataset.taskId = task.getId();
 
     const button = document.createElement("button");
     button.classList.add("project-view__task-button");
+    button.dataset.taskId = task.getId();
 
     const taskMain = document.createElement("div");
     taskMain.classList.add("project-view__task-main");

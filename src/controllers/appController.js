@@ -8,196 +8,210 @@ import { task } from "../models/task";
 
 (function () {
 
-    const projects = new Map();
-    const taskForm = document.querySelector(".task-form");
-    const newProjButton = document.querySelector(".sidebar__new-project-button");
-    const newProjTitle = newProjButton.querySelector(".sidebar__new-project-title");
-    const newProjInput = newProjButton.querySelector(".sidebar__new-project-input");
-    const projectList = document.querySelector(".sidebar__project-list");
-    const addTaskButtons = document.querySelectorAll(".project-view__column-add-task-button");
-    const formProjectList = document.querySelector(".task-form__project-list");
+    const taskForm = document.querySelector(".task-form")
+    const taskFormTaskTitle = document.querySelector(".task-form__title-input");
+    const taskFormProjectSelectList = document.querySelector(".task-form__project-list");
+    const taskFormDueDate = document.querySelector(".task-form__date-wrapper");
+    const taskFormPrioritySelectList = document.querySelector(".task-form__priority");
+    const taskFormStatusSelectList = document.querySelector(".task-form__status");
+    const taskFormCreateTaskButton = document.querySelector(".task-form__create-task");
+    const taskFormCancelTaskButton = document.querySelector(".task-form__collapse-form");
+
+    const sidebarProjectList = document.querySelector(".sidebar__project-list");
+    const sidebarNewProjectButton = document.querySelector(".sidebar__new-project-button");
+    const sidebarNewProjectInput = document.querySelector(".sidebar__new-project-input");
+    const sidebarNewProjectButtonTitle = document.querySelector(".sidebar__new-project-title");
+
     const toolbarProjectList = document.querySelector(".toolbar__project-list");
+    const toolbarAddTaskButton = document.querySelector(".toolbar__add-task-button");
 
-    let projectStage = project("myProj");
-    projects.set(projectStage.getId(), projectStage);
+    const todoCol = document.querySelector(`[data-list-type="todo"]`)
+    const progCol = document.querySelector(`[data-list-type="progress"]`)
+    const compCol = document.querySelector(`[data-list-type="complete"]`)
 
-    function addTaskButtonEventHandler() {
-        taskForm.classList.toggle("hide");
-    }
+    const columnAddTaskButtons = document.querySelectorAll(".project-view__new-task-button");
 
-    function addProjectButtonEventHandler() {
+    const work = project("test");
 
-        // must be able to click on input
-        if (!newProjInput.classList.contains("hide"))
-            return;
+    const projects = new Map();
+    let stagedProject = work;
 
-        newProjTitle.classList.toggle("hide");
-        newProjInput.classList.toggle("hide");
-    }
-
-    function handleProjectChange(event) {
-        const selectedOption = event.target.selectedOptions[0];
-        const projectId = selectedOption.dataset.projectId;
-
-        if (projects.has(projectId)) {
-            projectStage = projects.get(projectId);
-            renderProjectTasks(projectStage);
-        }
-    }
-
-    function createTaskHandler() {
-        const title = document.querySelector(".task-form__title-input").value;
-        const due = document.querySelector(".task-form__date-wrapper").value;
-        const priority = document.querySelector(".task-form__priority").value;
-        const status = document.querySelector(".task-form__status").value;
-        const notes = document.querySelector(".task-form__notes-container").value;
-
-        if (title === "") {
-            document.querySelector(".task-form__title-input").placeholder = "Enter a title!";
-            return;
-        }
+    projects.set(work.getId(), work);
+    renderProjectTasks(work);
 
 
-        console.log("title: " + title);
-        console.log("due: " + due);
-        console.log("priority: " + priority);
-        console.log("status: " + status);
-        console.log("notes: " + notes);
-
-        const tsk = task(title);
-
-        if (due !== "")
-            tsk.setDueDate(new Date(due));
-
-        if (priority === "low") {
-            tsk.setPriority(Priority.LOW);
-            console.log(tsk.getPriority())
-        } else if (priority === "medium") {
-            tsk.setPriority(Priority.MEDIUM);
-        } else if (priority === "high") {
-            tsk.setPriority(Priority.HIGH);
-        }
-
-        if (status === "todo")
-            tsk.setStatus(Status.TODO);
-        else if (status === "progress")
-            tsk.setStatus(Status.PROGRESS);
-        else if (status === "completed")
-            tsk.setStatus(Status.COMPLETED);
-
-
-        console.log("tsk status: " + tsk.getStatus());
-        console.log("tsk pri: " + tsk.getPriority());
-
-        tsk.setDescription(notes);
-
-        projectStage.addTask(tsk);
-
-        renderProjectTask(tsk);
-
-        document.querySelector(".task-form__title-input").placeholder = "What will we do today...";
+    function hideTaskForm() {
         taskForm.reset();
-        taskForm.classList.toggle("hide");
+        taskForm.classList.add("hide");
+    }
+
+    function showTaskForm() {
+        taskForm.classList.remove("hide");
+    }
+
+    function showSidebarInput() {
+        sidebarNewProjectInput.classList.remove("hide");
+        sidebarNewProjectButtonTitle.classList.add("hide");
+    }
+
+    function hideSidebarInput() {
+        sidebarNewProjectInput.classList.add("hide");
+        sidebarNewProjectButtonTitle.classList.remove("hide");
+    }
+
+    // adds a new project to the list 
+    function initListsWithProject(project) {
+
+        console.log("in initlists");
+
+        const toolbarOption = document.createElement("option");
+        toolbarOption.classList.add("toolbar__title-option");
+        toolbarOption.value = project.getTitle();
+        toolbarOption.textContent = project.getTitle();
+        toolbarOption.dataset.projectId = project.getId();
+
+        const taskFormOption = document.createElement("option");
+        taskFormOption.classList.add("toolbar__title-option");
+        taskFormOption.value = project.getTitle();
+        taskFormOption.textContent = project.getTitle();
+        taskFormOption.dataset.projectId = project.getId();
+
+        taskFormProjectSelectList.prepend(taskFormOption);
+        taskFormProjectSelectList.value = project.getTitle();
+
+        toolbarProjectList.prepend(toolbarOption);
+        toolbarProjectList.value = project.getTitle();
+        console.log(taskFormProjectSelectList.value);
     }
 
 
-    addTaskButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            addTaskButtonEventHandler();
+    // renders a project to the stage
+    function renderNewProject(project) {
+        const title = sidebarNewProjectInput.value;
+
+        initListsWithProject(project);
+
+        const newProjElement = projectRenderer(project);
+
+        newProjElement.addEventListener('click', () => {
+            const proj = projects.get(newProjElement.dataset.projectId);
+            switchProjectTo(proj);
+        });
+
+        sidebarProjectList.prepend(newProjElement);
+
+        hideSidebarInput();
+    }
+
+    // sets up task for depending on selected project on stage
+    function initTaskForm(button) {
+
+        if (button) {
+            if (button.dataset.statusColumn) {
+                taskFormStatusSelectList.value = button.dataset.statusColumn;
+            }
+        }
+
+        taskFormProjectSelectList.value = stagedProject.getTitle();
+
+        showTaskForm();
+    }
+
+    // renders page with the project passed in
+    function switchProjectTo(project) {
+        stagedProject = project;
+        renderProjectTasks(project);
+        toolbarProjectList.value = project.getTitle();
+        taskFormProjectSelectList.value = project.getTitle();
+    }
+
+    toolbarAddTaskButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        initTaskForm(event.target);
+    })
+
+    columnAddTaskButtons.forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            initTaskForm(button);
+
         });
     });
 
-    const cancelTaskButton = document.querySelector(".task-form__collapse-form");
-    cancelTaskButton.addEventListener('click', function (event) {
-        addTaskButtonEventHandler();
+    document.querySelector(".new-task__collapse").addEventListener('click', () => {
+        hideTaskForm();
     })
 
-
-    const createTaskButton = document.querySelector(".task-form__create-task");
-    createTaskButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        createTaskHandler();
+    document.querySelector(".task-form__collapse-form").addEventListener('click', () => {
+        hideTaskForm();
     })
 
-
-    const addTaskButton = document.querySelector(".toolbar__add-task-button");
-    addTaskButton.addEventListener('click', function () {
-        addTaskButtonEventHandler();
+    sidebarNewProjectButton.addEventListener('click', () => {
+        showSidebarInput();
     })
 
-    const collapseForm = document.querySelector(".new-task__collapse");
-    collapseForm.addEventListener('click', function () {
-        taskForm.reset();
-        taskForm.classList.toggle("hide");
-    })
+    // creates a new project, sets it to the stage
+    // and renders it to the screen immediately
+    sidebarNewProjectButton.addEventListener("keypress", (event) => {
 
-    const addProjectButton = document.querySelector(".sidebar__new-project-button");
-    addProjectButton.addEventListener('click', function () {
-        addProjectButtonEventHandler();
-    })
+        if (event.key !== "Enter")
+            return;
 
-    addProjectButton.addEventListener("keypress", function (event) {
+        const newProjTitle = sidebarNewProjectInput.value;
 
-        if (newProjInput.classList.contains("hide")) {
-            console.log("enter pressed");
+        if (newProjTitle === "") {
+            sidebarNewProjectInput.placeholder = "Enter a title...";
             return;
         }
 
-        if (event.key === "Enter") {
-            const projTitle = document.querySelector(".sidebar__new-project-input").value;
+        const newProj = project(newProjTitle);
+        projects.set(newProj.getId(), newProj);
 
-            if (projTitle === "") {
-                document.querySelector(".sidebar__new-project-input").placeholder = "Enter a name.";
-                return;
-            } else {
-                document.querySelector(".sidebar__new-project-input").placeholder = "";
-            }
+        sidebarNewProjectInput.placeholder = "";
+        sidebarNewProjectInput.value = "";
+
+        renderNewProject(newProj);
+        switchProjectTo(newProj);
+    })
+
+    // changes project on list select
+    toolbarProjectList.addEventListener('change', (event) => {
+        const selectedProject = toolbarProjectList.options[toolbarProjectList.selectedIndex];
+        const selectedProjectId = selectedProject.dataset.projectId;
+
+        const newProj = projects.get(selectedProjectId);
+        switchProjectTo(newProj);
+    })
 
 
-            const newProject = project(projTitle);
-            projects.set(newProject.getId(), newProject);
+    // create a task and add it to its appropriate project
+    // and render it to the screen if necessary
+    taskFormCreateTaskButton.addEventListener('click', () => {
+        const title = taskFormTaskTitle.value;
 
-            projectStage = newProject;
-
-
-
-            // close input prompt and clear input
-            newProjTitle.classList.toggle("hide");
-            newProjInput.classList.toggle("hide");
-            newProjInput.value = "";
-
-            // render the new project onto the page
-            renderProjectTasks(newProject);
-            projectStage = newProject;
-            projectList.prepend(projectRenderer(newProject));
-
-            const toolbarOption = document.createElement("option");
-            toolbarOption.classList.add("toolbar__title-option");
-            toolbarOption.value = newProject.getTitle();
-            toolbarOption.id = newProject.getTitle();
-            toolbarOption.textContent = newProject.getTitle();
-            toolbarOption.dataset.projectId = newProject.getId();
-
-            toolbarProjectList.prepend(toolbarOption);
-            toolbarProjectList.value = newProject.getTitle();
-
-            const formOption = document.createElement("option");
-            formOption.classList.add("toolbar__title-option");
-            formOption.value = newProject.getTitle();
-            formOption.id = newProject.getTitle();
-            formOption.textContent = newProject.getTitle();
-            formOption.dataset.projectId = newProject.getId();
-
-            formProjectList.append(formOption);
-            formProjectList.value = newProject.getTitle();
+        if (title === "") {
+            taskFormTaskTitle.placeholder = "Enter a title...";
+            return;
         }
 
-        console.log(projects);
+
+
     })
 
-    toolbarProjectList.addEventListener('change', (event) => {
-        handleProjectChange(event);
-    })
+    // closes form when open, and a click outside the form occurs
+    document.addEventListener("click", (event) => {
+        if (
+            !taskForm.classList.contains("hide") &&
+            !taskForm.contains(event.target)
+        ) {
+            taskForm.reset();
+            initTaskForm(null);
+            taskForm.classList.add("hide");
+        }
+    });
+
+
 
 
 })();
