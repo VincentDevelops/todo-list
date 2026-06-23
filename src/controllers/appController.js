@@ -1,12 +1,21 @@
 import { projectRenderer } from "../components/projectRenderer";
 import { renderProjectTask } from "../components/renderProjectTask";
 import { renderProjectTasks } from "../components/renderProjectTasks";
+import { taskRenderer } from "../components/taskRenderer";
 import { Priority } from "../models/priority";
 import { project } from "../models/project";
 import { Status } from "../models/status";
 import { task } from "../models/task";
 
 (function () {
+
+    const noProjectsView = document.querySelector(".no-projects");
+
+    const projectView = document.querySelector(".project-view");
+
+    const deleteProjectPopup = document.querySelector(".delete-project__popup");
+    const deleteProjectCancelButton = document.querySelector(".delete-project__cancel-button")
+    const deleteProjectDeleteButton = document.querySelector(".delete-project__delete-button")
 
     const taskForm = document.querySelector(".task-form")
     const taskFormTaskTitle = document.querySelector(".task-form__title-input");
@@ -24,21 +33,22 @@ import { task } from "../models/task";
 
     const toolbarProjectList = document.querySelector(".toolbar__project-list");
     const toolbarAddTaskButton = document.querySelector(".toolbar__add-task-button");
+    const toolbarTrashButton = document.querySelector(".toolbar__trash-button");
 
     const todoCol = document.querySelector(`[data-list-type="todo"]`)
     const progCol = document.querySelector(`[data-list-type="progress"]`)
-    const compCol = document.querySelector(`[data-list-type="complete"]`)
+    const compCol = document.querySelector(`[data-list-type="completed"]`)
 
     const columnAddTaskButtons = document.querySelectorAll(".project-view__new-task-button");
 
-    const work = project("test");
-
     const projects = new Map();
-    let stagedProject = work;
+    const noProjects = project("No Project");
+    let stagedProject = noProjects;
 
-    projects.set(work.getId(), work);
-    renderProjectTasks(work);
-
+    projects.set(noProjects.getId(), noProjects);
+    renderProjectTasks(noProjects);
+    switchProjectTo(noProjects);
+    renderNewProject(noProjects);
 
     function hideTaskForm() {
         taskForm.reset();
@@ -57,6 +67,30 @@ import { task } from "../models/task";
     function hideSidebarInput() {
         sidebarNewProjectInput.classList.add("hide");
         sidebarNewProjectButtonTitle.classList.remove("hide");
+    }
+
+    function showDeletePrompt() {
+        deleteProjectPopup.classList.remove("hide");
+    }
+
+    function removeDeletePrompt() {
+        deleteProjectPopup.classList.add("hide");
+    }
+
+    function showNoProjects() {
+        noProjectsView.classList.remove("hide");
+    }
+
+    function removeNoProjects() {
+        noProjectsView.classList.add("hide");
+    }
+
+    function showProjectView() {
+        projectView.classList.remove("hide");
+    }
+
+    function removeProjectView() {
+        projectView.classList.add("hide");
     }
 
     // adds a new project to the list 
@@ -83,7 +117,6 @@ import { task } from "../models/task";
         toolbarProjectList.value = project.getTitle();
         console.log(taskFormProjectSelectList.value);
     }
-
 
     // renders a project to the stage
     function renderNewProject(project) {
@@ -125,6 +158,97 @@ import { task } from "../models/task";
         taskFormProjectSelectList.value = project.getTitle();
     }
 
+    function initProjectTask() {
+        const title = taskFormTaskTitle.value;
+
+        const projId = taskFormProjectSelectList.
+            options[taskFormProjectSelectList.selectedIndex].
+            dataset.projectId;
+
+        const due = taskFormDueDate.value;
+        const status = taskFormStatusSelectList.value;
+        const priority = taskFormPrioritySelectList.value;
+
+        if (title === "") {
+            taskFormTaskTitle.placeholder = "Enter a title...";
+            return;
+        }
+
+        const tsk = task(title);
+
+        if (due !== "")
+            tsk.setDueDate(due);
+
+        tsk.setStatus(status);
+
+        tsk.setPriority(priority);
+
+        if (projId !== stagedProject.getId()) {
+            projects.get(projId).addTask(tsk);
+            tsk.setProject(projects.get(projId));
+        } else {
+            stagedProject.addTask(tsk);
+            tsk.setProject(stagedProject);
+            renderProjectTask(tsk);
+        }
+
+        hideTaskForm();
+    }
+
+    function removeTaskElement(task) {
+        const taskButton = document.querySelector(`[data-task-id=${task.getId()}]`);
+        if (!taskButton)
+            return;
+
+        const taskLi = taskButton.parentElement;
+
+        if (!taskLi)
+            return;
+
+        taskLi.remove();
+    }
+
+    function deleteTask(task) {
+        const proj = task.getProject();
+        projects.get(proj.getId()).removeTask(task);
+    }
+
+    function changeTaskProjectTo(task, targetProj) {
+        const oldProj = task.getProject();
+        targetProj.addTask(task);
+        oldProj.removeTask();
+        task.setProject(targetProj);
+    }
+
+    function removeStagedProject() {
+        const id = stagedProject.getId();
+
+        const sidebarElement = sidebarProjectList
+            .querySelector(`[data-project-id="${id}"]`);
+
+        const toolbarElement = toolbarProjectList
+            .querySelector(`[data-project-id="${id}"]`);
+
+        const taskbarElement = taskFormProjectSelectList
+            .querySelector(`[data-project-id="${id}"]`);
+
+        sidebarElement.remove();
+        toolbarElement.remove();
+        taskbarElement.remove();
+
+        projects.delete(stagedProject.getId());
+
+        if (projects.size === 0) {
+            removeProjectView();
+            showNoProjects();
+        }
+        else {
+            stagedProject = projects.values().next().value;
+            renderProjectTasks(stagedProject);
+        }
+
+    }
+
     toolbarAddTaskButton.addEventListener('click', (event) => {
         event.stopPropagation();
         initTaskForm(event.target);
@@ -139,17 +263,11 @@ import { task } from "../models/task";
         });
     });
 
-    document.querySelector(".new-task__collapse").addEventListener('click', () => {
-        hideTaskForm();
-    })
+    document.querySelector(".new-task__collapse").addEventListener('click', hideTaskForm)
 
-    document.querySelector(".task-form__collapse-form").addEventListener('click', () => {
-        hideTaskForm();
-    })
+    document.querySelector(".task-form__collapse-form").addEventListener('click', hideTaskForm)
 
-    sidebarNewProjectButton.addEventListener('click', () => {
-        showSidebarInput();
-    })
+    sidebarNewProjectButton.addEventListener('click', showSidebarInput);
 
     // creates a new project, sets it to the stage
     // and renders it to the screen immediately
@@ -165,11 +283,18 @@ import { task } from "../models/task";
             return;
         }
 
+
+        if (projects.size === 1) {
+            removeNoProjects();
+            showProjectView();
+        }
+
         const newProj = project(newProjTitle);
         projects.set(newProj.getId(), newProj);
 
         sidebarNewProjectInput.placeholder = "";
         sidebarNewProjectInput.value = "";
+
 
         renderNewProject(newProj);
         switchProjectTo(newProj);
@@ -184,20 +309,58 @@ import { task } from "../models/task";
         switchProjectTo(newProj);
     })
 
-
     // create a task and add it to its appropriate project
     // and render it to the screen if necessary
-    taskFormCreateTaskButton.addEventListener('click', () => {
-        const title = taskFormTaskTitle.value;
+    taskFormCreateTaskButton.addEventListener('click', initProjectTask);
 
-        if (title === "") {
-            taskFormTaskTitle.placeholder = "Enter a title...";
+    taskForm.addEventListener('keydown', (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            initProjectTask();
+        }
+    })
+
+    projectView.addEventListener('click', (event) => {
+        if (!event.target.matches(".project-view__task-complete"))
             return;
+
+
+        const completed = event.target;
+        console.log(completed);
+
+        const button = event.target.parentElement.parentElement;
+        const taskId = button.dataset.taskId;
+
+        console.log(button);
+
+        const task = stagedProject.getTask(taskId);
+        console.log(task);
+        const li = button.parentElement;
+
+        if (completed.classList.contains("project-view__task-complete--active")) {
+            task.setStatus(Status.TODO);
+            stagedProject.moveTask(task);
+        } else {
+            task.setStatus(Status.COMPLETED);
+            stagedProject.moveTask(task);
         }
 
+        li.remove();
 
+        renderProjectTasks(stagedProject);
+        console.log(stagedProject.getTodoList());
 
     })
+
+
+    toolbarTrashButton.addEventListener('click', showDeletePrompt);
+
+    deleteProjectDeleteButton.addEventListener('click', () => {
+        removeStagedProject();
+        removeDeletePrompt();
+    })
+
+    deleteProjectCancelButton.addEventListener('click', removeDeletePrompt);
 
     // closes form when open, and a click outside the form occurs
     document.addEventListener("click", (event) => {
@@ -210,8 +373,6 @@ import { task } from "../models/task";
             taskForm.classList.add("hide");
         }
     });
-
-
 
 
 })();

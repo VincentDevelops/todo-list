@@ -1,5 +1,6 @@
 import { task } from "../models/task.js"
 import { format } from "date-fns";
+import { Status } from "../models/status.js";
 import priorityFlag from "../assets/icons/fi-rs-flag.svg"
 
 
@@ -20,6 +21,11 @@ export function taskRenderer(task) {
 
     const completeSpan = document.createElement("span");
     completeSpan.classList.add("project-view__task-complete");
+    if (task.getStatus() === Status.COMPLETED)
+        completeSpan.classList.add("project-view__task-complete--active");
+    else
+        completeSpan.classList.remove("project-view__task-complete--active");
+
     taskMain.append(titleSpan, completeSpan);
 
     const taskDetails = document.createElement("div");

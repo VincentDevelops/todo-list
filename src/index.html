@@ -52,13 +52,13 @@
                 <div class="sidebar__section">
                     <div class="sidebar__section-title">Projects</div>
                     <ul class="sidebar__project-list sidebar__list">
-                        <li class="sidebar__project sidebar__project--active">
+                        <!-- <li class="sidebar__project sidebar__project--active">
                             <button class="sidebar__button sidebar__project-list-options">
                                 <span class="sidebar__project-icon"></span>
                                 <span class="sidebar__project-label ">Work</span>
                             </button>
                             <data data-project="project-name" value="0" class="sidebar__count">0</data>
-                        </li>
+                        </li> -->
                         <li class="sidebar__project">
                             <button class="sidebar__new-project-button">
                                 <img src="./assets/icons/fi-rr-plus.svg" alt="add-project" class="sidebar__icon">
@@ -82,10 +82,13 @@
             <header class="toolbar">
                 <div class="toolbar__heading">
                     <select class="toolbar__title task-form__select-wrapper toolbar__project-list">
-                        <option class="toolbar__title-option" value="work" id="work">Work</option>
+                        <!-- <option class="toolbar__title-option" value="work" id="work">Work</option> -->
                     </select>
                 </div>
                 <div class="toolbar__actions">
+                    <button class="toolbar__button toolbar__trash-button">
+                        <img src="./assets/icons/fi-bs-trash.svg" alt="delete project" class="toolbar__icon">
+                    </button>
                     <button class="toolbar__button" data-action="toolbar__action--filter">
                         <img class="toolbar__icon" src="./assets/icons/fi-rr-filter.svg" alt="">
                         <span class="toolbar__button-title">Filter</span>
@@ -212,6 +215,9 @@
 
             </section>
 
+            <div class="no-projects hide">
+                <span>Create a project...<br> Over there...<br><--- <span>
+            </div>
 
 
         </main>
@@ -231,12 +237,6 @@
                         <label for="project">Project</label>
                     </div>
                     <select name="project" class="task-form__select-wrapper task-form__project-list">
-                        <option value="none">
-                            <span>No Project</span>
-                        </option>
-                        <option value="work">
-                            <span>Work</span>
-                        </option>
                     </select>
                 </div>
                 <div class="task-form__row">
@@ -281,6 +281,13 @@
                 <button class="task-form__button task-form__create-task" type="button">Create Task</button>
             </div>
         </form>
+
+        <div class="delete-project__popup hide">
+            <span class="delete-project__prompt">Are you sure you want to delete this project?</span>
+            <button class="delete-project__button delete-project__delete-button">Delete</button>
+            <button class="delete-project__button delete-project__cancel-button">Cancel</button>
+        </div>
+
 
     </div>
 </body>

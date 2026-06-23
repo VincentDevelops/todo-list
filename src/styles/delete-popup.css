@@ -1,0 +1,29 @@
+.delete-project__popup {
+    display: flex;
+    flex-direction: row;
+    padding: calc(var(--default-padding) * 2);
+    gap: var(--default-gap);
+    background-color: var(--card-bg);
+    max-width: 500px;
+    border: 1px solid rgba(1, 1, 1, 0.75);
+    border-radius: 10px;
+    position: absolute;
+    justify-self: center;
+    top: 100px;
+    box-shadow: 0 0 10px 2px black;
+    font-size: var(--step-0);
+}
+
+.delete-project__prompt {
+    line-height: 1.25;
+}
+
+.delete-project__button {
+    background-color: var(--styling-color);
+    padding: var(--default-padding);
+    border-radius: 10px;
+}
+
+.delete-project__button:hover {
+    filter: brightness(115%);
+}

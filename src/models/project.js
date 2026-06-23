@@ -90,11 +90,16 @@ export const project = (name) => {
         ));
     }
 
+    const moveTask = (thisTask) => {
+        removeTask(thisTask.getId());
+        addTask(thisTask);
+    }
+
     return {
         getCompletedList, getProgressList, getTask, getTodoList,
         setColor, addTask, addTasks, addCompletedTask,
         addProgressTask, addTodoTask, removeTask,
-        sortByDate, getTitle, getColor, getId,
+        sortByDate, getTitle, getColor, getId, moveTask,
     }
 
 }

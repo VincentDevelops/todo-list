@@ -44,7 +44,8 @@ export const task = (newTitle) => {
 
     return {
         getDescription, getDueDate, getId, getProject, getStatus, getTitle,
-        getPriority, setDescription, setDueDate, setPriority, setStatus, setTitle
+        getPriority, setDescription, setDueDate, setPriority, setStatus, setTitle,
+        setProject,
     }
 
 }
