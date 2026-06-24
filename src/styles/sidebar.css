@@ -1,7 +1,6 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    min-width: 250px;
     padding-top: var(--default-padding);
     padding-left: 15px;
     padding-right: 25px;
@@ -47,10 +46,12 @@
     border-radius: 100%;
 }
 
-.sidebar__collapse-button:hover {
-    transform: scale(1.1);
-    filter: brightness(100);
+.sidebar__collapse-button {
+    margin-left: 40px;
+}
 
+.sidebar__collapse-button:hover {
+    filter: brightness(100);
 }
 
 .sidebar__nav {
@@ -151,4 +152,8 @@
 
 .sidebar__new-project-title:hover {
     font-weight: 600;
+}
+
+.sidebar--collapsed>*:not(.sidebar__collapse-button) {
+    display: none;
 }

@@ -16,15 +16,9 @@ export function projectRenderer(project) {
     projLabel.classList.add("sidebar__project-label");
     projLabel.textContent = project.getTitle();
 
-    const data = document.createElement("data");
-    data.classList.add("sidebar__count");
-    data.value = 0;
-    data.dataset.project = project.getTitle();
-    data.textContent = 0;
-
     button.append(projIcon, projLabel);
 
-    proj.append(button, data);
+    proj.append(button);
 
     return proj;
 }

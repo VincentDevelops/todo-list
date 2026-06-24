@@ -6,6 +6,7 @@ import { Priority } from "../models/priority";
 import { project } from "../models/project";
 import { Status } from "../models/status";
 import { task } from "../models/task";
+import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date-fns";
 
 (function () {
 
@@ -23,13 +24,22 @@ import { task } from "../models/task";
     const taskFormDueDate = document.querySelector(".task-form__date-wrapper");
     const taskFormPrioritySelectList = document.querySelector(".task-form__priority");
     const taskFormStatusSelectList = document.querySelector(".task-form__status");
+    const taskFormNotesText = document.querySelector(".task-form__notes-container");
     const taskFormCreateTaskButton = document.querySelector(".task-form__create-task");
     const taskFormCancelTaskButton = document.querySelector(".task-form__collapse-form");
+    const taskFormDeleteTaskButton = document.querySelector(".task-form__delete-task-button");
+    const taskFormEditTaskButton = document.querySelector(".task-form__edit-task");
 
+    const sidebar = document.querySelector(".sidebar");
     const sidebarProjectList = document.querySelector(".sidebar__project-list");
     const sidebarNewProjectButton = document.querySelector(".sidebar__new-project-button");
     const sidebarNewProjectInput = document.querySelector(".sidebar__new-project-input");
     const sidebarNewProjectButtonTitle = document.querySelector(".sidebar__new-project-title");
+    const sidebarFilterToday = document.querySelector(`[data-filter="today"]`);
+    const sidebarFilterWeek = document.querySelector(`[data-filter="week"]`);
+    const sidebarFilterAllTime = document.querySelector(`[data-filter="all"]`);
+    const sidebarCollapseButton = document.querySelector(".sidebar__collapse-button");
+
 
     const toolbarProjectList = document.querySelector(".toolbar__project-list");
     const toolbarAddTaskButton = document.querySelector(".toolbar__add-task-button");
@@ -43,12 +53,22 @@ import { task } from "../models/task";
 
     const projects = new Map();
     const noProjects = project("No Project");
-    let stagedProject = noProjects;
+    let stagedProject = null;
+    let editingTask = null;
+    let timeProject = null;
 
     projects.set(noProjects.getId(), noProjects);
-    renderProjectTasks(noProjects);
-    switchProjectTo(noProjects);
-    renderNewProject(noProjects);
+    initNoProjectOption();
+
+    function initNoProjectOption() {
+        const option = document.createElement("option");
+        option.value = noProjects.getTitle();
+        option.textContent = noProjects.getTitle();
+        option.dataset.projectId = noProjects.getId();
+
+        taskFormProjectSelectList.append(option);
+    }
+
 
     function hideTaskForm() {
         taskForm.reset();
@@ -70,6 +90,8 @@ import { task } from "../models/task";
     }
 
     function showDeletePrompt() {
+        if (stagedProject === null)
+            return;
         deleteProjectPopup.classList.remove("hide");
     }
 
@@ -118,6 +140,11 @@ import { task } from "../models/task";
         console.log(taskFormProjectSelectList.value);
     }
 
+    function renderListswithExistingProject(project) {
+        toolbarProjectList.value = project.getTitle();
+        taskFormProjectSelectList.value = project.getTitle();
+    }
+
     // renders a project to the stage
     function renderNewProject(project) {
         const title = sidebarNewProjectInput.value;
@@ -145,6 +172,10 @@ import { task } from "../models/task";
             }
         }
 
+        taskFormEditTaskButton.classList.add("hide");
+        taskFormDeleteTaskButton.classList.add("hide");
+        taskFormCreateTaskButton.classList.remove("hide");
+
         taskFormProjectSelectList.value = stagedProject.getTitle();
 
         showTaskForm();
@@ -158,8 +189,20 @@ import { task } from "../models/task";
         taskFormProjectSelectList.value = project.getTitle();
     }
 
+    function isWithinNextSevenDays(date) {
+        return isWithinInterval(new Date(date), {
+            start: startOfToday(),
+            end: endOfDay(addDays(new Date(), 7)),
+        });
+    }
+
     function initProjectTask() {
         const title = taskFormTaskTitle.value;
+
+        if (title === "") {
+            taskFormTaskTitle.placeholder = "Enter a title...";
+            return;
+        }
 
         const projId = taskFormProjectSelectList.
             options[taskFormProjectSelectList.selectedIndex].
@@ -168,11 +211,7 @@ import { task } from "../models/task";
         const due = taskFormDueDate.value;
         const status = taskFormStatusSelectList.value;
         const priority = taskFormPrioritySelectList.value;
-
-        if (title === "") {
-            taskFormTaskTitle.placeholder = "Enter a title...";
-            return;
-        }
+        const notes = taskFormNotesText.value;
 
         const tsk = task(title);
 
@@ -183,6 +222,8 @@ import { task } from "../models/task";
 
         tsk.setPriority(priority);
 
+        tsk.setDescription(notes);
+
         if (projId !== stagedProject.getId()) {
             projects.get(projId).addTask(tsk);
             tsk.setProject(projects.get(projId));
@@ -192,11 +233,19 @@ import { task } from "../models/task";
             renderProjectTask(tsk);
         }
 
+
+
         hideTaskForm();
     }
 
     function removeTaskElement(task) {
-        const taskButton = document.querySelector(`[data-task-id=${task.getId()}]`);
+
+        if (task === null) {
+            console.log("removeTaskElement(task) task is null");
+            return;
+        }
+
+        const taskButton = document.querySelector(`[data-task-id="${task.getId()}"]`);
         if (!taskButton)
             return;
 
@@ -210,7 +259,10 @@ import { task } from "../models/task";
 
     function deleteTask(task) {
         const proj = task.getProject();
-        projects.get(proj.getId()).removeTask(task);
+
+        if (proj === null) return;
+
+        projects.get(proj.getId()).removeTask(task.getId());
     }
 
     function changeTaskProjectTo(task, targetProj) {
@@ -221,7 +273,15 @@ import { task } from "../models/task";
     }
 
     function removeStagedProject() {
+
+        if (stagedProject === null) {
+            removeDeletePrompt();
+            return;
+        }
+
         const id = stagedProject.getId();
+        console.log("id: " + id);
+        console.log(noProjects.getId());
 
         const sidebarElement = sidebarProjectList
             .querySelector(`[data-project-id="${id}"]`);
@@ -232,30 +292,48 @@ import { task } from "../models/task";
         const taskbarElement = taskFormProjectSelectList
             .querySelector(`[data-project-id="${id}"]`);
 
+        console.log("sidebarEl: " + sidebarElement);
+        console.log("toolbarEl: " + toolbarElement);
+        console.log("taskbarEl: " + taskbarElement);
+
         sidebarElement.remove();
         toolbarElement.remove();
         taskbarElement.remove();
 
         projects.delete(stagedProject.getId());
 
-        if (projects.size === 0) {
+        if (projects.size === 1) {
+
             removeProjectView();
             showNoProjects();
         }
-        else {
-            stagedProject = projects.values().next().value;
-            renderProjectTasks(stagedProject);
-        }
 
+        const nextProject = [...projects.values()][1];
+
+        if (nextProject) {
+            stagedProject = nextProject;
+            renderProjectTasks(stagedProject);
+            renderListswithExistingProject(nextProject)
+        } else {
+            stagedProject = null;
+            showNoProjects();
+        }
     }
+
+
 
     toolbarAddTaskButton.addEventListener('click', (event) => {
         event.stopPropagation();
+
+        if (stagedProject === null)
+            return;
+
         initTaskForm(event.target);
     })
 
     columnAddTaskButtons.forEach(button => {
         button.addEventListener("click", (event) => {
+
             event.stopPropagation();
 
             initTaskForm(button);
@@ -274,6 +352,9 @@ import { task } from "../models/task";
     sidebarNewProjectButton.addEventListener("keypress", (event) => {
 
         if (event.key !== "Enter")
+            return;
+
+        if (editingTask !== null)
             return;
 
         const newProjTitle = sidebarNewProjectInput.value;
@@ -373,6 +454,128 @@ import { task } from "../models/task";
             taskForm.classList.add("hide");
         }
     });
+
+    taskFormDeleteTaskButton.addEventListener('click', (event) => {
+        console.log("deleting");
+        event.preventDefault();
+
+        if (!editingTask) return;
+
+        stagedProject.removeTask(editingTask.getId());
+        renderProjectTasks(stagedProject);
+
+        editingTask = null;
+        hideTaskForm();
+    })
+
+    taskFormEditTaskButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+
+        if (!editingTask) return;
+
+        const newTitle = taskFormTaskTitle.value;
+        const newDue = taskFormDueDate.value;
+        const newStat = taskFormStatusSelectList.value;
+        const newPri = taskFormPrioritySelectList.value;
+        const newNotes = taskFormNotesText.value;
+        const selectedOption =
+            taskFormProjectSelectList.options[taskFormProjectSelectList.selectedIndex];
+        const newProjId = selectedOption.dataset.projectId;
+
+        editingTask.setTitle(newTitle);
+        editingTask.setDueDate(newDue);
+        editingTask.setStatus(newStat);
+        editingTask.setPriority(newPri);
+        editingTask.setDescription(newNotes);
+
+        if (newProjId === stagedProject.getId()) {
+            stagedProject.moveTask(editingTask);
+        } else {
+            stagedProject.removeTask(editingTask.getId());
+            projects.get(newProjId).addTask(editingTask);
+        }
+
+
+        editingTask = null;
+        renderProjectTasks(stagedProject);
+        hideTaskForm();
+
+    })
+
+    sidebarFilterToday.addEventListener("click", () => {
+        stagedProject = null;
+
+        const tempProject = project("Today");
+
+        for (const proj of projects.values()) {
+            for (const task of proj.getTodaysTasks().values()) {
+                tempProject.addTask(task);
+            }
+        }
+
+        renderProjectTasks(tempProject);
+    });
+
+    sidebarFilterWeek.addEventListener('click', () => {
+        stagedProject = null;
+
+        const tempProject = project("Today");
+
+        for (const proj of projects.values()) {
+            for (const task of proj.getNextSevenDaysTasks().values()) {
+                tempProject.addTask(task);
+            }
+        }
+
+        renderProjectTasks(tempProject);
+
+    })
+
+    sidebarFilterAllTime.addEventListener('click', () => {
+        stagedProject = null;
+
+        const tempProject = project("Today");
+
+        for (const proj of projects.values()) {
+            for (const task of proj.getAllTasks().values()) {
+                tempProject.addTask(task);
+            }
+        }
+
+        renderProjectTasks(tempProject);
+
+    })
+
+    sidebarCollapseButton.addEventListener("click", () => {
+        sidebar.classList.toggle("sidebar--collapsed");
+    });
+
+    document.addEventListener('dblclick', (event) => {
+        if (!taskForm.classList.contains("hide")) return;
+
+        taskFormDeleteTaskButton.classList.remove("hide");
+        taskFormEditTaskButton.classList.remove("hide");
+        taskFormCreateTaskButton.classList.add("hide");
+
+        const taskElement = event.target.closest(".project-view__task");
+
+        if (!taskElement) return;
+        const button = taskElement.querySelector(".project-view__task-button");
+
+        if (!button) return;
+
+        const taskId = button.dataset.taskId;
+        editingTask = stagedProject.getTask(taskId);
+
+        taskFormTaskTitle.value = editingTask.getTitle();
+        taskFormDueDate.value = editingTask.getDueDate();
+        taskFormStatusSelectList.value = editingTask.getStatus();
+        taskFormPrioritySelectList.value = editingTask.getPriority();
+        taskFormNotesText.textContent = editingTask.getDescription();
+        showTaskForm();
+
+    })
 
 
 })();

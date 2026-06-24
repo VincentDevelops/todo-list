@@ -55,6 +55,7 @@
 
 .task-form__field-title {
     display: flex;
+    align-items: center;
     flex-direction: row;
     font-size: var(--step-0);
     gap: var(--default-gap);
@@ -115,6 +116,7 @@
 .task-form__footer {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: var(--default-gap);
     justify-content: flex-end;
 }

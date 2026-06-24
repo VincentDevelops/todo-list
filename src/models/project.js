@@ -1,5 +1,10 @@
 import { Status } from "./status";
-import { compareAsc, format } from "date-fns";
+import {
+    compareAsc, format, isToday,
+    isWithinInterval, startOfToday,
+    endOfDay, addDays,
+    differenceInCalendarDays, parseISO
+} from "date-fns";
 
 
 export const project = (name) => {
@@ -90,6 +95,91 @@ export const project = (name) => {
         ));
     }
 
+    const getTodaysTasks = () => {
+        const todaysTasks = new Map();
+        for (const task of todo.values()) {
+            if (task.getDueDate() === "") continue;
+
+            if (isToday(parseISO(task.getDueDate())))
+                todaysTasks.set(task.getId(), task);
+        }
+        for (const task of progress.values()) {
+            if (task.getDueDate() === "") continue;
+
+            if (isToday(parseISO(task.getDueDate())))
+                todaysTasks.set(task.getId(), task);
+        }
+        for (const task of completed.values()) {
+            if (task.getDueDate() === "") continue;
+
+            if (isToday(parseISO(task.getDueDate())))
+                todaysTasks.set(task.getId(), task);
+        }
+
+        return todaysTasks;
+    }
+
+    const getNextSevenDaysTasks = () => {
+        const nextSevenTasks = new Map();
+        const today = new Date();
+
+        for (const task of todo.values()) {
+            if (task.getDueDate() === "") continue;
+
+            const diff = differenceInCalendarDays(parseISO(task.getDueDate()), today);
+
+            if (diff >= 0 && diff <= 7)
+                nextSevenTasks.set(task.getId(), task);
+        }
+        for (const task of progress.values()) {
+            if (task.getDueDate() === "") continue;
+
+            const diff = differenceInCalendarDays(parseISO(task.getDueDate()), today);
+
+            if (diff >= 0 && diff <= 7)
+                nextSevenTasks.set(task.getId(), task);
+        }
+        for (const task of completed.values()) {
+            if (task.getDueDate() === "") continue;
+
+            const diff = differenceInCalendarDays(parseISO(task.getDueDate()), today);
+
+            if (diff >= 0 && diff <= 7)
+                nextSevenTasks.set(task.getId(), task);
+        }
+
+        return nextSevenTasks;
+    }
+
+    const getAllTasks = () => {
+        const allTasks = new Map();
+
+        for (const task of todo.values()) {
+            allTasks.set(task.getId(), task);
+        }
+        for (const task of progress.values()) {
+            allTasks.set(task.getId(), task);
+        }
+        for (const task of completed.values()) {
+            allTasks.set(task.getId(), task);
+        }
+
+        return allTasks;
+    }
+
+    //     const result = differenceInCalendarDays(
+    //   new Date(2012, 6, 2, 0, 0),
+    //   new Date(2011, 6, 2, 23, 0)
+    // )
+    // //=> 366
+    // // How many calendar days are between
+    // // 2 July 2011 23:59:00 and 3 July 2011 00:01:00?
+    // const result = differenceInCalendarDays(
+    //   new Date(2011, 6, 3, 0, 1),
+    //   new Date(2011, 6, 2, 23, 59)
+    // )
+    //=> 1
+
     const moveTask = (thisTask) => {
         removeTask(thisTask.getId());
         addTask(thisTask);
@@ -100,6 +190,7 @@ export const project = (name) => {
         setColor, addTask, addTasks, addCompletedTask,
         addProgressTask, addTodoTask, removeTask,
         sortByDate, getTitle, getColor, getId, moveTask,
+        getTodaysTasks, getNextSevenDaysTasks, getAllTasks,
     }
 
 }

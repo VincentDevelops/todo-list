@@ -10,7 +10,7 @@
 .toolbar__heading {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: var(--default-gap);
     align-items: center;
 }
 

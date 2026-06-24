@@ -17,9 +17,7 @@
                     <img src="./assets/images/selfie.jpg" alt="vince-photo" class="sidebar__logo">
                     <h1 class="sidebar__title">Vince</h1>
                 </div>
-                <button class="sidebar__collapse-button">
-                    <img src="./assets/icons/fi-rr-collapse.svg" alt="collapse sidebar" class="sidebar__icon">
-                </button>
+
             </div>
 
             <nav class="sidebar__nav">
@@ -30,21 +28,18 @@
                                 <img src="./assets/icons/fi-rr-calendar.svg" alt="calendar-today" class="sidebar__icon">
                                 <span class="sidebar__label">Today</span>
                             </button>
-                            <data data-filter-count="today" value="0" class="sidebar__count">0</data>
                         </li>
                         <li class="sidebar__filter">
                             <button class="sidebar__button" data-filter="week">
                                 <img src="./assets/icons/fi-rs-calendar.svg" alt="calendar-week" class="sidebar__icon">
                                 <span class="sidebar__label">This Week</span>
                             </button>
-                            <data data-filter-count="week" value="0" class="sidebar__count">0</data>
                         </li>
                         <li class="sidebar__filter">
                             <button class="sidebar__button" data-filter="all">
                                 <img src="./assets/icons/fi-rs-list.svg" alt="list-all" class="sidebar__icon">
                                 <span class="sidebar__label">All tasks</span>
                             </button>
-                            <data data-filter-count="all" value="0" class="sidebar__count">0</data>
                         </li>
                     </ul>
                 </section>
@@ -81,6 +76,9 @@
         <main class="main">
             <header class="toolbar">
                 <div class="toolbar__heading">
+                    <button class="sidebar__collapse-button">
+                        <img src="./assets/icons/fi-rr-collapse.svg" alt="collapse sidebar" class="toolbar__icon">
+                    </button>
                     <select class="toolbar__title task-form__select-wrapper toolbar__project-list">
                         <!-- <option class="toolbar__title-option" value="work" id="work">Work</option> -->
                     </select>
@@ -108,7 +106,7 @@
 
             <section class="task-view">
 
-                <div class="project-view">
+                <div class="project-view hide">
 
                     <section class="project-view__column" id="project-view__column-todo">
                         <div class="project-view__column-header">
@@ -215,7 +213,7 @@
 
             </section>
 
-            <div class="no-projects hide">
+            <div class="no-projects">
                 <span>Create a project...<br> Over there...<br><--- <span>
             </div>
 
@@ -279,6 +277,8 @@
             <div class="task-form__footer">
                 <button class="task-form__button task-form__collapse-form" type="reset">Cancel</button>
                 <button class="task-form__button task-form__create-task" type="button">Create Task</button>
+                <button class="task-form__button task-form__delete-task-button hide">Delete Task</button>
+                <button class="task-form__button task-form__edit-task">Edit Task</button>
             </div>
         </form>
 
