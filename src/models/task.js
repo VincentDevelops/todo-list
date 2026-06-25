@@ -42,10 +42,21 @@ export const task = (newTitle) => {
         project = proj;
     }
 
+    const toJSON = () => {
+        return {
+            id,
+            title,
+            dueDate,
+            priority,
+            status,
+            description
+        }
+    }
+
     return {
         getDescription, getDueDate, getId, getProject, getStatus, getTitle,
         getPriority, setDescription, setDueDate, setPriority, setStatus, setTitle,
-        setProject,
+        setProject, toJSON,
     }
 
 }

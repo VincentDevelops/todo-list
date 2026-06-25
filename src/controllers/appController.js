@@ -6,6 +6,7 @@ import { project } from "../models/project";
 import { Status } from "../models/status";
 import { task } from "../models/task";
 import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date-fns";
+import { saveProjects, loadProjects, storageAvailable } from "../models/storage.js";
 
 (function () {
 
@@ -50,6 +51,8 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
     const columnAddTaskButtons = document.querySelectorAll(".project-view__new-task-button");
 
+    const hasStorage = storageAvailable("localStorage");
+
     const projects = new Map();
     const noProjects = project("No Project");
     let stagedProject = noProjects;
@@ -57,6 +60,54 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
     projects.set(noProjects.getId(), noProjects);
     initNoProjectOption();
+
+    loadSavedProjects();
+
+    // review -- rework --
+    function loadSavedProjects() {
+        const savedProjects = loadProjects();
+
+        if (!savedProjects) return;
+
+        projects.clear();
+
+        for (const savedProject of savedProjects) {
+            const loadedProject = project(savedProject.title);
+
+            loadedProject.setColor(savedProject.color);
+
+            for (const savedTask of savedProject.tasks ?? []) {
+                const loadedTask = task(savedTask.title);
+
+                loadedTask.setDueDate(savedTask.dueDate);
+                loadedTask.setPriority(savedTask.priority);
+                loadedTask.setStatus(savedTask.status);
+                loadedTask.setDescription(savedTask.description);
+                loadedTask.setProject(loadedProject);
+
+                loadedProject.addTask(loadedTask);
+            }
+
+            projects.set(loadedProject.getId(), loadedProject);
+            if (loadedProject.getTitle() === "No Project") {
+                stagedProject = loadedProject;
+            } else {
+                renderNewProject(loadedProject);
+            }
+        }
+
+        if (projects.size > 1) {
+            removeNoProjects();
+            showProjectView();
+
+            const firstProject = [...projects.values()][1];
+            switchProjectTo(firstProject);
+        } else {
+            stagedProject = noProjects;
+            showNoProjects();
+            removeProjectView();
+        }
+    }
 
     function initNoProjectOption() {
         const option = document.createElement("option");
@@ -233,6 +284,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
 
         hideTaskForm();
+
+        if (hasStorage)
+            saveProjects(projects);
     }
 
     function removeTaskElement(task) {
@@ -387,6 +441,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
         renderNewProject(newProj);
         switchProjectTo(newProj);
+
+        if (hasStorage)
+            saveProjects(projects);
     })
 
     // changes project on list select
@@ -454,6 +511,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         li.remove();
 
         renderProjectTasks(project);
+
+        if (hasStorage)
+            saveProjects(projects);
     })
 
 
@@ -462,6 +522,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     deleteProjectDeleteButton.addEventListener('click', () => {
         removeStagedProject();
         removeDeletePrompt();
+
+        if (hasStorage)
+            saveProjects(projects);
     })
 
     deleteProjectCancelButton.addEventListener('click', removeDeletePrompt);
@@ -530,6 +593,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
         renderProjectTasks(stagedProject);
         hideTaskForm();
+
+        if (hasStorage)
+            saveProjects(projects);
     });
 
     taskFormDeleteTaskButton.addEventListener('click', (event) => {
@@ -546,6 +612,9 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
         editingTask = null;
         hideTaskForm();
+
+        if (hasStorage)
+            saveProjects(projects)
     });
 
     sidebarFilterWeek.addEventListener('click', () => {

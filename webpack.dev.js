@@ -5,6 +5,6 @@ export default merge(common, {
     mode: 'development',
     devtool: 'eval-source-map',
     devServer: {
-        watchFiles: ["./src/index.html"],
+        watchFiles: ["./src/index.html", "./src/pages/about.html"],
     },
 });

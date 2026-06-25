@@ -46,7 +46,6 @@
     border-radius: 100%;
 }
 
-.sidebar__collapse-button {}
 
 .sidebar__collapse-button:hover {
     filter: brightness(100);

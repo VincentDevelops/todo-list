@@ -188,13 +188,26 @@ export const project = (name) => {
         addTask(thisTask);
     }
 
+    const toJSON = () => {
+        return {
+            id,
+            title,
+            color,
+            tasks: [
+                ...todo.values(),
+                ...progress.values(),
+                ...completed.values()
+            ]
+        };
+    };
+
     return {
         getCompletedList, getProgressList, getTask, getTodoList,
         setColor, addTask, addTasks, addCompletedTask,
         addProgressTask, addTodoTask, removeTask,
         sortByDate, getTitle, getColor, getId, moveTask,
         getTodaysTasks, getNextSevenDaysTasks, getAllTasks,
-        contains,
+        contains, toJSON,
     }
 
 }

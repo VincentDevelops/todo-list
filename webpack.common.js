@@ -17,6 +17,13 @@ export default {
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
+            filename: 'index.html',
+            chunks: ['app'],
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/pages/about.html',
+            filename: 'pages/about.html',
+            chunks: ['app'],
         }),
     ],
     module: {
