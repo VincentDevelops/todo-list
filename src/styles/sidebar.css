@@ -46,12 +46,17 @@
     border-radius: 100%;
 }
 
-.sidebar__collapse-button {
-    margin-left: 40px;
-}
+.sidebar__collapse-button {}
 
 .sidebar__collapse-button:hover {
     filter: brightness(100);
+}
+
+.sidebar__collapse-icon {
+    width: var(--step-1);
+    height: var(--step-1);
+    filter: invert(100%) sepia(3%) saturate(12%) hue-rotate(103deg) brightness(105%) contrast(105%);
+
 }
 
 .sidebar__nav {
@@ -131,7 +136,6 @@
     border-radius: 5px;
     font-size: var(--step-0);
     padding: 5px;
-    flex: 1;
     min-width: 0;
     box-sizing: border-box;
 }

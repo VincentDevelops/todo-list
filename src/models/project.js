@@ -33,6 +33,8 @@ export const project = (name) => {
     const getId = () => id;
     const getTitle = () => title;
     const getColor = () => color;
+    const contains = (taskId) =>
+        todo.has(taskId) || progress.has(taskId) || completed.has(taskId);
 
     const setColor = (clr) => {
         color = clr;
@@ -180,6 +182,7 @@ export const project = (name) => {
     // )
     //=> 1
 
+
     const moveTask = (thisTask) => {
         removeTask(thisTask.getId());
         addTask(thisTask);
@@ -191,6 +194,7 @@ export const project = (name) => {
         addProgressTask, addTodoTask, removeTask,
         sortByDate, getTitle, getColor, getId, moveTask,
         getTodaysTasks, getNextSevenDaysTasks, getAllTasks,
+        contains,
     }
 
 }

@@ -5,6 +5,7 @@
     align-items: center;
     height: fit-content;
     padding: calc(var(--default-padding)*1.5);
+    padding-left: 0;
 }
 
 .toolbar__heading {
@@ -12,6 +13,7 @@
     flex-direction: row;
     gap: var(--default-gap);
     align-items: center;
+    padding: 0;
 }
 
 .toolbar__title {

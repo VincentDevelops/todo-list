@@ -1,7 +1,6 @@
 import { projectRenderer } from "../components/projectRenderer";
 import { renderProjectTask } from "../components/renderProjectTask";
 import { renderProjectTasks } from "../components/renderProjectTasks";
-import { taskRenderer } from "../components/taskRenderer";
 import { Priority } from "../models/priority";
 import { project } from "../models/project";
 import { Status } from "../models/status";
@@ -17,6 +16,7 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     const deleteProjectPopup = document.querySelector(".delete-project__popup");
     const deleteProjectCancelButton = document.querySelector(".delete-project__cancel-button")
     const deleteProjectDeleteButton = document.querySelector(".delete-project__delete-button")
+    const deleteProjectPrompt = document.querySelector(".delete-project__prompt");
 
     const taskForm = document.querySelector(".task-form")
     const taskFormTaskTitle = document.querySelector(".task-form__title-input");
@@ -40,7 +40,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     const sidebarFilterAllTime = document.querySelector(`[data-filter="all"]`);
     const sidebarCollapseButton = document.querySelector(".sidebar__collapse-button");
 
-
     const toolbarProjectList = document.querySelector(".toolbar__project-list");
     const toolbarAddTaskButton = document.querySelector(".toolbar__add-task-button");
     const toolbarTrashButton = document.querySelector(".toolbar__trash-button");
@@ -53,9 +52,8 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
     const projects = new Map();
     const noProjects = project("No Project");
-    let stagedProject = null;
+    let stagedProject = noProjects;
     let editingTask = null;
-    let timeProject = null;
 
     projects.set(noProjects.getId(), noProjects);
     initNoProjectOption();
@@ -90,12 +88,13 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     }
 
     function showDeletePrompt() {
-        if (stagedProject === null)
+        if (stagedProject === noProjects)
             return;
         deleteProjectPopup.classList.remove("hide");
     }
 
     function removeDeletePrompt() {
+        deleteProjectPrompt.textContent = "Are you sure you want to delete this project?";
         deleteProjectPopup.classList.add("hide");
     }
 
@@ -118,7 +117,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     // adds a new project to the list 
     function initListsWithProject(project) {
 
-        console.log("in initlists");
 
         const toolbarOption = document.createElement("option");
         toolbarOption.classList.add("toolbar__title-option");
@@ -137,7 +135,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
         toolbarProjectList.prepend(toolbarOption);
         toolbarProjectList.value = project.getTitle();
-        console.log(taskFormProjectSelectList.value);
     }
 
     function renderListswithExistingProject(project) {
@@ -147,8 +144,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
     // renders a project to the stage
     function renderNewProject(project) {
-        const title = sidebarNewProjectInput.value;
-
         initListsWithProject(project);
 
         const newProjElement = projectRenderer(project);
@@ -176,7 +171,8 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         taskFormDeleteTaskButton.classList.add("hide");
         taskFormCreateTaskButton.classList.remove("hide");
 
-        taskFormProjectSelectList.value = stagedProject.getTitle();
+        if (stagedProject !== null)
+            taskFormProjectSelectList.value = stagedProject.getTitle();
 
         showTaskForm();
     }
@@ -207,6 +203,7 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         const projId = taskFormProjectSelectList.
             options[taskFormProjectSelectList.selectedIndex].
             dataset.projectId;
+
 
         const due = taskFormDueDate.value;
         const status = taskFormStatusSelectList.value;
@@ -241,7 +238,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     function removeTaskElement(task) {
 
         if (task === null) {
-            console.log("removeTaskElement(task) task is null");
             return;
         }
 
@@ -268,7 +264,7 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     function changeTaskProjectTo(task, targetProj) {
         const oldProj = task.getProject();
         targetProj.addTask(task);
-        oldProj.removeTask();
+        oldProj.removeTask(task.getId());
         task.setProject(targetProj);
     }
 
@@ -280,8 +276,6 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         }
 
         const id = stagedProject.getId();
-        console.log("id: " + id);
-        console.log(noProjects.getId());
 
         const sidebarElement = sidebarProjectList
             .querySelector(`[data-project-id="${id}"]`);
@@ -292,20 +286,19 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         const taskbarElement = taskFormProjectSelectList
             .querySelector(`[data-project-id="${id}"]`);
 
-        console.log("sidebarEl: " + sidebarElement);
-        console.log("toolbarEl: " + toolbarElement);
-        console.log("taskbarEl: " + taskbarElement);
+        if (sidebarElement) sidebarElement.remove();
+        if (toolbarElement) toolbarElement.remove();
+        if (taskbarElement) taskbarElement.remove();
 
-        sidebarElement.remove();
-        toolbarElement.remove();
-        taskbarElement.remove();
+        if (id !== noProjects.getId())
+            projects.delete(stagedProject.getId());
 
-        projects.delete(stagedProject.getId());
-
+        // only noProjects is left
         if (projects.size === 1) {
-
             removeProjectView();
             showNoProjects();
+            stagedProject = noProjects;
+            return;
         }
 
         const nextProject = [...projects.values()][1];
@@ -315,18 +308,33 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
             renderProjectTasks(stagedProject);
             renderListswithExistingProject(nextProject)
         } else {
-            stagedProject = null;
+            stagedProject = noProjects;
             showNoProjects();
         }
     }
 
+    function findTaskAndProject(taskId) {
+        for (const proj of projects.values()) {
+            if (proj.contains(taskId)) {
+                return {
+                    project: proj,
+                    task: proj.getTask(taskId),
+                };
+            }
+        }
+
+        return {
+            project: null,
+            task: null,
+        };
+    }
 
 
     toolbarAddTaskButton.addEventListener('click', (event) => {
         event.stopPropagation();
 
-        if (stagedProject === null)
-            return;
+        // if (stagedProject === null)
+        //     return;
 
         initTaskForm(event.target);
     })
@@ -407,30 +415,45 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
 
 
         const completed = event.target;
-        console.log(completed);
 
         const button = event.target.parentElement.parentElement;
         const taskId = button.dataset.taskId;
+        let project = null;
+        let task = null;
 
-        console.log(button);
+        if (stagedProject.contains(taskId)) {
+            project = stagedProject;
+            task = project.getTask(taskId);
 
-        const task = stagedProject.getTask(taskId);
-        console.log(task);
+        } else {
+            for (const proj of projects.values()) {
+                if (proj.contains(taskId)) {
+                    project = proj;
+                    task = proj.getTask(taskId)
+                    break;
+                }
+            }
+        }
+
+
+        if (task === null) {
+            console.log("task is null in projectView event listener");
+            return;
+        }
+
         const li = button.parentElement;
 
         if (completed.classList.contains("project-view__task-complete--active")) {
             task.setStatus(Status.TODO);
-            stagedProject.moveTask(task);
+            project.moveTask(task);
         } else {
             task.setStatus(Status.COMPLETED);
-            stagedProject.moveTask(task);
+            project.moveTask(task);
         }
 
         li.remove();
 
-        renderProjectTasks(stagedProject);
-        console.log(stagedProject.getTodoList());
-
+        renderProjectTasks(project);
     })
 
 
@@ -456,21 +479,23 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     });
 
     taskFormDeleteTaskButton.addEventListener('click', (event) => {
-        console.log("deleting");
         event.preventDefault();
 
         if (!editingTask) return;
 
-        stagedProject.removeTask(editingTask.getId());
+        const project = editingTask.getProject();
+
+        if (!project) return;
+
+        project.removeTask(editingTask.getId());
         renderProjectTasks(stagedProject);
 
         editingTask = null;
         hideTaskForm();
-    })
+    });
 
     taskFormEditTaskButton.addEventListener('click', (event) => {
         event.preventDefault();
-
 
         if (!editingTask) return;
 
@@ -479,46 +504,52 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
         const newStat = taskFormStatusSelectList.value;
         const newPri = taskFormPrioritySelectList.value;
         const newNotes = taskFormNotesText.value;
+
         const selectedOption =
             taskFormProjectSelectList.options[taskFormProjectSelectList.selectedIndex];
         const newProjId = selectedOption.dataset.projectId;
 
+        const oldProject = editingTask.getProject();
+        const newProject = projects.get(newProjId);
+
+        // Remove from its current project while it still has its old status
+        oldProject.removeTask(editingTask.getId());
+
+        // Update the task
         editingTask.setTitle(newTitle);
         editingTask.setDueDate(newDue);
         editingTask.setStatus(newStat);
         editingTask.setPriority(newPri);
         editingTask.setDescription(newNotes);
+        editingTask.setProject(newProject);
 
-        if (newProjId === stagedProject.getId()) {
-            stagedProject.moveTask(editingTask);
-        } else {
-            stagedProject.removeTask(editingTask.getId());
-            projects.get(newProjId).addTask(editingTask);
-        }
-
+        // Add back to the appropriate project/status
+        newProject.addTask(editingTask);
 
         editingTask = null;
+
         renderProjectTasks(stagedProject);
         hideTaskForm();
+    });
 
-    })
+    taskFormDeleteTaskButton.addEventListener('click', (event) => {
+        event.preventDefault();
 
-    sidebarFilterToday.addEventListener("click", () => {
-        stagedProject = null;
+        if (!editingTask) return;
 
-        const tempProject = project("Today");
+        const project = editingTask.getProject();
 
-        for (const proj of projects.values()) {
-            for (const task of proj.getTodaysTasks().values()) {
-                tempProject.addTask(task);
-            }
-        }
+        if (!project) return;
 
-        renderProjectTasks(tempProject);
+        project.removeTask(editingTask.getId());
+        renderProjectTasks(stagedProject);
+
+        editingTask = null;
+        hideTaskForm();
     });
 
     sidebarFilterWeek.addEventListener('click', () => {
-        stagedProject = null;
+        stagedProject = noProjects;
 
         const tempProject = project("Today");
 
@@ -528,14 +559,21 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
             }
         }
 
+        removeNoProjects();
+        showProjectView();
         renderProjectTasks(tempProject);
 
     })
 
     sidebarFilterAllTime.addEventListener('click', () => {
-        stagedProject = null;
+        stagedProject = noProjects;
+
+        console.log(stagedProject.getTitle());
 
         const tempProject = project("Today");
+
+        console.log(tempProject.getTitle());
+        console.log(tempProject);
 
         for (const proj of projects.values()) {
             for (const task of proj.getAllTasks().values()) {
@@ -543,6 +581,8 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
             }
         }
 
+        removeNoProjects();
+        showProjectView();
         renderProjectTasks(tempProject);
 
     })
@@ -554,28 +594,32 @@ import { isToday, isWithinInterval, startOfToday, endOfDay, addDays } from "date
     document.addEventListener('dblclick', (event) => {
         if (!taskForm.classList.contains("hide")) return;
 
-        taskFormDeleteTaskButton.classList.remove("hide");
-        taskFormEditTaskButton.classList.remove("hide");
-        taskFormCreateTaskButton.classList.add("hide");
-
         const taskElement = event.target.closest(".project-view__task");
 
         if (!taskElement) return;
+
         const button = taskElement.querySelector(".project-view__task-button");
 
         if (!button) return;
 
         const taskId = button.dataset.taskId;
-        editingTask = stagedProject.getTask(taskId);
+        const result = findTaskAndProject(taskId);
+
+        if (!result.task) return;
+
+        editingTask = result.task;
+
+        taskFormDeleteTaskButton.classList.remove("hide");
+        taskFormEditTaskButton.classList.remove("hide");
+        taskFormCreateTaskButton.classList.add("hide");
 
         taskFormTaskTitle.value = editingTask.getTitle();
         taskFormDueDate.value = editingTask.getDueDate();
         taskFormStatusSelectList.value = editingTask.getStatus();
         taskFormPrioritySelectList.value = editingTask.getPriority();
-        taskFormNotesText.textContent = editingTask.getDescription();
+        taskFormNotesText.value = editingTask.getDescription();
+
         showTaskForm();
-
-    })
-
+    });
 
 })();
