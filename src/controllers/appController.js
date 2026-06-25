@@ -63,6 +63,57 @@ import { saveProjects, loadProjects, storageAvailable } from "../models/storage.
 
     loadSavedProjects();
 
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+
+    if (!hasSeenTutorial) {
+        const tutorialTask4 = task("Double click me!");
+        tutorialTask4.setDescription("Here you can edit, delete, or move your task to another project.\n\nThe toolbar up top lets you choose or delete your project, and a add a new task \n\nThe sidebar to the left also allows you to select or create a new project, and see filtered tasks.");
+
+        const tutorialTask2 = task("A Medium Priority Task!")
+        tutorialTask2.setPriority(Priority.MEDIUM);
+        tutorialTask2.setStatus(Status.PROGRESS);
+
+
+        const tutorialTask3 = task("A High Priority task!");
+        tutorialTask3.setPriority(Priority.HIGH);
+        tutorialTask3.setStatus(Status.COMPLETED);
+
+        const tutorialTask1 = task("Look @ Abt Page Btm Left!");
+        tutorialTask1.setPriority(Priority.HIGH);
+        tutorialTask1.setStatus(Status.TODO);
+
+        const tutorialTask5 = task("Click the circle to the right!");
+        tutorialTask5.setPriority(Priority.HIGH);
+        tutorialTask5.setStatus(Status.TODO);
+
+
+        const tutorialProj = project("Tutorial Project");
+        tutorialProj.addTask(tutorialTask1);
+        tutorialProj.addTask(tutorialTask2);
+        tutorialProj.addTask(tutorialTask3);
+        tutorialProj.addTask(tutorialTask5);
+        tutorialProj.addTask(tutorialTask4);
+
+        tutorialTask1.setProject(tutorialProj);
+        tutorialTask2.setProject(tutorialProj);
+        tutorialTask3.setProject(tutorialProj);
+        tutorialTask4.setProject(tutorialProj);
+        tutorialTask5.setProject(tutorialProj);
+
+        projects.set(tutorialProj.getId(), tutorialProj);
+
+        removeNoProjects();
+        showProjectView();
+
+        renderNewProject(tutorialProj);
+        switchProjectTo(tutorialProj);
+
+        localStorage.setItem("hasSeenTutorial", "true");
+
+        if (hasStorage)
+            saveProjects(projects);
+    }
+
     // review -- rework --
     function loadSavedProjects() {
         const savedProjects = loadProjects();
@@ -617,10 +668,27 @@ import { saveProjects, loadProjects, storageAvailable } from "../models/storage.
             saveProjects(projects)
     });
 
+    sidebarFilterToday.addEventListener('click', () => {
+        stagedProject = noProjects;
+
+        const tempProject = project("today");
+
+        for (const proj of projects.values()) {
+            for (const task of proj.getTodaysTasks().values()) {
+                tempProject.addTask(task);
+            }
+        }
+
+        removeNoProjects();
+        showProjectView();
+        renderProjectTasks(tempProject);
+
+    })
+
     sidebarFilterWeek.addEventListener('click', () => {
         stagedProject = noProjects;
 
-        const tempProject = project("Today");
+        const tempProject = project("week");
 
         for (const proj of projects.values()) {
             for (const task of proj.getNextSevenDaysTasks().values()) {
@@ -637,9 +705,7 @@ import { saveProjects, loadProjects, storageAvailable } from "../models/storage.
     sidebarFilterAllTime.addEventListener('click', () => {
         stagedProject = noProjects;
 
-        console.log(stagedProject.getTitle());
-
-        const tempProject = project("Today");
+        const tempProject = project("all");
 
         console.log(tempProject.getTitle());
         console.log(tempProject);
